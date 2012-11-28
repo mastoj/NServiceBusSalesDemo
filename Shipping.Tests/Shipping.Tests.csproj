@@ -48,8 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BookingShippingPolicyTestsBase.cs" />
     <Compile Include="When_Booking_A_Shipment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="When_FedEx_Confirms_Booking.cs" />
+    <Compile Include="When_UPS_Confirms_Booking.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

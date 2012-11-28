@@ -60,6 +60,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Conventions\Conventions.csproj">
+      <Project>{d5686f3a-8042-4186-a1ea-a53b2efc5102}</Project>
+      <Name>Conventions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Messages\Messages.csproj">
       <Project>{4C33C400-C401-4404-BE2E-343BEACFF39F}</Project>
       <Name>Messages</Name>

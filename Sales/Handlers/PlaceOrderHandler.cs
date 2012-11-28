@@ -18,4 +18,12 @@ namespace Sales.Handlers
                 });
         }
     }
+
+    public class ShipmentBookedHandler : IHandleMessages<ShipmentBooked>
+    {
+        public void Handle(ShipmentBooked message)
+        {
+            LogManager.GetLogger("ShipmentBookedHandler").Info("Shipment is really booked " + message.OrderId);
+        }
+    }
 }

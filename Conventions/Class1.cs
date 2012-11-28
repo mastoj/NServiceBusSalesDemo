@@ -14,12 +14,18 @@ namespace Conventions
             {
                 typeof(OrderAccepted),
                 typeof(CustomerMadePreferred)
-            }; 
+            };
+
+        private static List<Type> _commandTypes = new List<Type>()
+            {
+                typeof(BookShipping)
+            };
 
         public void Init()
         {
             Configure.Instance.DefiningEventsAs(
                 (t) => _eventTypes.Contains(t));
+            Configure.Instance.DefiningMessagesAs((t) => _commandTypes.Contains(t));
         }
     }
 }

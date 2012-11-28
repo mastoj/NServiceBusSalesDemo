@@ -20,28 +20,42 @@ namespace UI
 
         private static void Run()
         {
-            Console.WriteLine("Place an order");
+            Console.WriteLine("Do something, prefix with b to book shipment");
             var readLine = Console.ReadLine();
             while (!string.IsNullOrEmpty(readLine))
             {
                 var placeOrder = ParseLine(readLine);
-                Console.WriteLine("Placing order for customer: {0}, and product: {1}", placeOrder.CustomerId,
-                                  placeOrder.ProductId);
-                Bus.Send<PlaceOrder>(c =>
-                    {
-                        c.ProductId = placeOrder.ProductId;
-                        c.CustomerId = placeOrder.CustomerId;
-                    });
-                Console.WriteLine("Order placed");
-                Console.WriteLine("Place an order");
+                Bus.Send(placeOrder);
+                Console.WriteLine("Confirmed");
+                Console.WriteLine("Do something, prefix with b to book shipment");
                 readLine = Console.ReadLine();
             }
         }
 
-        private static PlaceOrder ParseLine(string readLine)
+        private static object ParseLine(string readLine)
         {
-            var input = readLine.Split(',').Select(int.Parse).ToList();
-            return new PlaceOrder() {CustomerId = input[0], ProductId = input[1]};
+            var firstChar = readLine[0];
+            if (firstChar == 'b')
+            {
+                return ParseBookShipping(readLine.Substring(1));
+            }
+            return ParsePlaceOrder(readLine);
+        }
+
+        private static object ParsePlaceOrder(string substring)
+        {
+            var input = substring.Split(',').Select(int.Parse).ToList();
+            var placeOrder = new PlaceOrder() { CustomerId = input[0], ProductId = input[1] };
+            Console.WriteLine("Placing order for customer: {0}, and product: {1}", placeOrder.CustomerId,
+                  placeOrder.ProductId);
+            return placeOrder;
+        }
+
+        private static object ParseBookShipping(string substring)
+        {
+            var booking = new BookShipping() {OrderId = int.Parse(substring)};
+            Console.WriteLine("Booking shipment for order: " + booking.OrderId);
+            return booking;
         }
 
         private static void ConfigureBus()

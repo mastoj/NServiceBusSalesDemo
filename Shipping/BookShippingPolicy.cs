@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Messages;
 using NServiceBus;
 using NServiceBus.Saga;
+using log4net;
 
 namespace Shipping
 {
@@ -17,42 +18,53 @@ namespace Shipping
     {
         public void Handle(BookShipping message)
         {
-            var fedExOrder = new FedExOrder() {OrderId = message.OrderId};
+            LogManager.GetLogger("BookShippingPolicy").Info("Booking shipping " + message.OrderId);
+            var fedExOrder = new FedExOrder() { OrderId = message.OrderId };
             Bus.Send(fedExOrder);
             RequestUtcTimeout(TimeSpan.FromSeconds(20), fedExOrder);
         }
 
         public void Timeout(FedExOrder message)
         {
+            LogManager.GetLogger("BookShippingPolicy").Info("FedEx timeout");
             var upsOrder = new UPSOrder() { OrderId = message.OrderId };
             Bus.Send(upsOrder);
             RequestUtcTimeout(TimeSpan.FromSeconds(20), upsOrder);
         }
 
-        public void Handle(FedExOrder createFedExConfirmation)
+        public void Handle(FedExOrder fedExOrder)
         {
             if (Data.ShipmentBooked)
             {
-                Bus.Send<CancelFedEx>(y => y.OrderId = createFedExConfirmation.OrderId);
+                LogManager.GetLogger("BookShippingPolicy").Info("Canceling FedEx");
+                Bus.Send<CancelFedEx>(y => y.OrderId = fedExOrder.OrderId);
             }
             else
             {
-                Bus.Send(new ShipmentBooked() { OrderId = createFedExConfirmation.OrderId });
+                LogManager.GetLogger("BookShippingPolicy").Info("FedEx confirmed");
+                Bus.Send(new ShipmentBooked() { OrderId = fedExOrder.OrderId });
                 Data.ShipmentBooked = true;
             }
         }
 
-        public void Handle(UPSOrder createFedExConfirmation)
+        public void Handle(UPSOrder upsOrder)
         {
             if (Data.ShipmentBooked)
             {
-                Bus.Send<CancelUPS>(y => y.OrderId = createFedExConfirmation.OrderId);
+                LogManager.GetLogger("BookShippingPolicy").Info("Canceling UPS");
+                Bus.Send<CancelUPS>(y => y.OrderId = upsOrder.OrderId);
             }
             else
             {
-                Bus.Send(new ShipmentBooked() { OrderId = createFedExConfirmation.OrderId });
+                LogManager.GetLogger("BookShippingPolicy").Info("UPS confirmed");
+                Bus.Send(new ShipmentBooked() { OrderId = upsOrder.OrderId });
                 Data.ShipmentBooked = true;
             }
+        }
+
+        public override void ConfigureHowToFindSaga()
+        {
+            ConfigureMapping(y => y.OrderId, (BookShipping m) => m.OrderId);
         }
     }
 
@@ -63,5 +75,7 @@ namespace Shipping
         public string OriginalMessageId { get; set; }
 
         public bool ShipmentBooked { get; set; }
+
+        public int OrderId { get; set; }
     }
 }
