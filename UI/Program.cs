@@ -82,7 +82,6 @@ namespace UI
                 //.XmlSerializer("http://acme.com")
                            .MsmqTransport()
                            .UnicastBus()
-                           .DoNotAutoSubscribe()
                            .CreateBus()
                            .Start(() => Configure.Instance.ForInstallationOn<Windows>().Install());
         }
