@@ -33,6 +33,9 @@
     <Reference Include="NServiceBus">
       <HintPath>..\packages\NServiceBus.Interfaces.3.3.2\lib\net40\NServiceBus.dll</HintPath>
     </Reference>
+    <Reference Include="NServiceBus.Testing">
+      <HintPath>..\packages\NServiceBus.Testing.3.3.2\lib\net40\NServiceBus.Testing.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -45,11 +48,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="When_Customer_Regrets_An_Order_Within_An_Hour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Messages\Messages.csproj">
+      <Project>{4C33C400-C401-4404-BE2E-343BEACFF39F}</Project>
+      <Name>Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sales\Sales.csproj">
+      <Project>{336B9D8A-B6A8-4525-885E-12E0C8FE8ECE}</Project>
+      <Name>Sales</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

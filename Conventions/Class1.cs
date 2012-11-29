@@ -13,12 +13,13 @@ namespace Conventions
         private static List<Type> _eventTypes = new List<Type>()
             {
                 typeof(OrderAccepted),
-                typeof(CustomerMadePreferred)
+                typeof(CustomerMadePreferred),
+                typeof(OrderCancelled)
             };
 
         private static List<Type> _commandTypes = new List<Type>()
             {
-                typeof(BookShipping)
+                typeof(BookShipping), typeof(PlaceOrder), typeof(CancelOrder)
             };
 
         public void Init()

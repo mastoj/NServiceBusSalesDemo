@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="BookShipping.cs" />
     <Compile Include="CustomerMadePreferred.cs" />
+    <Compile Include="CustomerRemorsedTimedOut.cs" />
     <Compile Include="FedExOrder.cs" />
     <Compile Include="OrderAccepted.cs" />
     <Compile Include="PlaceOrder.cs" />

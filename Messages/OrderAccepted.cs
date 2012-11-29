@@ -11,5 +11,7 @@ namespace Messages
         public int CustomerId { get; set; }
         public int ProductId { get; set; }
         public double OrderValue { get; set; }
+
+        public int OrderId { get; set; }
     }
 }

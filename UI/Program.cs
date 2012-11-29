@@ -24,9 +24,15 @@ namespace UI
             var readLine = Console.ReadLine();
             while (!string.IsNullOrEmpty(readLine))
             {
-                var placeOrder = ParseLine(readLine);
-                Bus.Send(placeOrder);
-                Console.WriteLine("Confirmed");
+                try
+                {
+                    var placeOrder = ParseLine(readLine);
+                    Bus.Send(placeOrder);
+                    Console.WriteLine("Confirmed");
+                }
+                catch (Exception)
+                {
+                }
                 Console.WriteLine("Do something, prefix with b to book shipment");
                 readLine = Console.ReadLine();
             }
@@ -35,17 +41,26 @@ namespace UI
         private static object ParseLine(string readLine)
         {
             var firstChar = readLine[0];
-            if (firstChar == 'b')
+            switch (firstChar)
             {
-                return ParseBookShipping(readLine.Substring(1));
+                case 'b': return ParseBookShipping(readLine.Substring(1));
+                    break;
+                case 'c':
+                    return ParseCancelBooking(readLine.Substring(1));
+                    break;
             }
             return ParsePlaceOrder(readLine);
+        }
+
+        private static object ParseCancelBooking(string substring)
+        {
+            return new CancelOrder() {OrderId = int.Parse(substring)};
         }
 
         private static object ParsePlaceOrder(string substring)
         {
             var input = substring.Split(',').Select(int.Parse).ToList();
-            var placeOrder = new PlaceOrder() { CustomerId = input[0], ProductId = input[1] };
+            var placeOrder = new PlaceOrder() { CustomerId = input[0], ProductId = input[1], OrderId = input[2]};
             Console.WriteLine("Placing order for customer: {0}, and product: {1}", placeOrder.CustomerId,
                   placeOrder.ProductId);
             return placeOrder;

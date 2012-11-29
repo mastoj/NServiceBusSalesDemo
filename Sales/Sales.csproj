@@ -54,6 +54,7 @@
     <Compile Include="EndpointConfig.cs" />
     <Compile Include="Handlers\CustomerPreferredHandler.cs" />
     <Compile Include="Handlers\PlaceOrderHandler.cs" />
+    <Compile Include="Policies\CustomerRemorsePolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

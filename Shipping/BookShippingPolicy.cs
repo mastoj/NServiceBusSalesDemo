@@ -46,7 +46,7 @@ namespace Shipping
             else
             {
                 Console.WriteLine("FedEx confirmed");
-                Bus.Send(new ShipmentBooked() { OrderId = fedExOrder.OrderId });
+                ReplyToOriginator(new ShipmentBooked() { OrderId = fedExOrder.OrderId });
                 Data.ShipmentBooked = true;
             }
         }
@@ -61,7 +61,7 @@ namespace Shipping
             else
             {
                 Console.WriteLine("UPS confirmed");
-                Bus.Send(new ShipmentBooked() { OrderId = upsOrder.OrderId });
+                ReplyToOriginator(new ShipmentBooked() { OrderId = upsOrder.OrderId });
                 Data.ShipmentBooked = true;
             }
         }
