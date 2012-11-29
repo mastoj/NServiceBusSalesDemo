@@ -17,12 +17,12 @@ namespace FedExProxy.Handlers
         {
             if (message.OrderId%6 == 0)
             {
-                LogManager.GetLogger("FedExOrderHandler").Info("This might take a while");
+                Console.WriteLine("This might take a while");
                 Thread.Sleep(22000);
             }
             else
             {
-                LogManager.GetLogger("FedExOrderHandler").Info("This should go fast");
+                Console.WriteLine("This should go fast");
             }
             Bus.Reply(message);
         }

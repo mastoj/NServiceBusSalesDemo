@@ -18,7 +18,7 @@ namespace Shipping
     {
         public void Handle(BookShipping message)
         {
-            LogManager.GetLogger("BookShippingPolicy").Info("Booking shipping " + message.OrderId);
+            Console.WriteLine("Booking shipping " + message.OrderId);
             var fedExOrder = new FedExOrder() { OrderId = message.OrderId };
             Bus.Send(fedExOrder);
             RequestUtcTimeout(TimeSpan.FromSeconds(20), fedExOrder);
@@ -26,22 +26,26 @@ namespace Shipping
 
         public void Timeout(FedExOrder message)
         {
-            LogManager.GetLogger("BookShippingPolicy").Info("FedEx timeout");
-            var upsOrder = new UPSOrder() { OrderId = message.OrderId };
-            Bus.Send(upsOrder);
-            RequestUtcTimeout(TimeSpan.FromSeconds(20), upsOrder);
+            Console.WriteLine("FedEx timeout");
+            if (!Data.ShipmentBooked)
+            {
+                Console.WriteLine("");
+                var upsOrder = new UPSOrder() { OrderId = message.OrderId };
+                Bus.Send(upsOrder);
+                RequestUtcTimeout(TimeSpan.FromSeconds(20), upsOrder);
+            }
         }
 
         public void Handle(FedExOrder fedExOrder)
         {
             if (Data.ShipmentBooked)
             {
-                LogManager.GetLogger("BookShippingPolicy").Info("Canceling FedEx");
-                Bus.Send<CancelFedEx>(y => y.OrderId = fedExOrder.OrderId);
+                Console.WriteLine("Canceling FedEx");
+//                Bus.Send<CancelFedEx>(y => y.OrderId = fedExOrder.OrderId);
             }
             else
             {
-                LogManager.GetLogger("BookShippingPolicy").Info("FedEx confirmed");
+                Console.WriteLine("FedEx confirmed");
                 Bus.Send(new ShipmentBooked() { OrderId = fedExOrder.OrderId });
                 Data.ShipmentBooked = true;
             }
@@ -51,12 +55,12 @@ namespace Shipping
         {
             if (Data.ShipmentBooked)
             {
-                LogManager.GetLogger("BookShippingPolicy").Info("Canceling UPS");
-                Bus.Send<CancelUPS>(y => y.OrderId = upsOrder.OrderId);
+                Console.WriteLine("Canceling UPS");
+//                Bus.Send<CancelUPS>(y => y.OrderId = upsOrder.OrderId);
             }
             else
             {
-                LogManager.GetLogger("BookShippingPolicy").Info("UPS confirmed");
+                Console.WriteLine("UPS confirmed");
                 Bus.Send(new ShipmentBooked() { OrderId = upsOrder.OrderId });
                 Data.ShipmentBooked = true;
             }
